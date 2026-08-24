@@ -1,0 +1,2094 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TripMint — A day that works</title>
+  <meta name="description" content="TripMint creates practical one-day travel itineraries, source-led destination guides, and clear decisions for limited travel time." />
+  <link rel="icon" href="data:," />
+  <style>
+    :root {
+      --bg: #061d26;
+      --panel: #082831;
+      --panel-2: #06222c;
+      --text: #f6f1e7;
+      --muted: rgba(246, 241, 231, 0.68);
+      --accent: #58ded7;
+      --orange: #f07945;
+      --line: rgba(255, 255, 255, 0.12);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(88, 222, 215, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(240, 121, 69, 0.12), transparent 20%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    body.no-scroll { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .container { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(6, 29, 38, 0.82);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 0;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      font-size: 18px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links button {
+      background: none;
+      border: none;
+      color: rgba(246, 241, 231, 0.75);
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+
+    .nav-links button:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 11px 16px;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent);
+      color: #062028;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); opacity: 0.96; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .full { width: 100%; }
+
+    .hero { padding: 72px 0 34px; }
+    .hero-grid {
+      display: grid;
+      gap: 28px;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(88, 222, 215, 0.35);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 16px 0 12px;
+      font-size: clamp(34px, 6vw, 68px);
+      line-height: 0.98;
+      max-width: 760px;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 680px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .hero-trust {
+      display: grid;
+      gap: 8px;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .section { padding: 56px 0; }
+    .section-alt {
+      background: rgba(255, 255, 255, 0.02);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 26px;
+    }
+
+    .section-head h2 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.02;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 13px 0 6px;
+      color: rgba(246, 241, 231, 0.84);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: #041720;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(88, 222, 215, 0.55);
+      box-shadow: 0 0 0 3px rgba(88, 222, 215, 0.12);
+    }
+
+    textarea { min-height: 120px; resize: vertical; }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 13px; }
+    .hidden { display: none !important; }
+
+    .form-error {
+      color: #ff9c7a;
+      min-height: 18px;
+      font-size: 13px;
+      margin: 9px 0;
+    }
+
+    .result-head h3 { margin: 0 0 8px; }
+    .result-head p { margin: 0 0 16px; color: var(--muted); }
+
+    .timeline {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline li { padding-left: 4px; }
+    .time {
+      display: inline-flex;
+      margin-bottom: 4px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .timeline p { margin: 0; color: rgba(246, 241, 231, 0.88); }
+
+    .result-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .result-cols h4 { margin: 0 0 8px; }
+    .result-cols ul { margin: 0; padding-left: 18px; color: var(--muted); }
+
+    .result-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .saved-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 13px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .saved-card h4 { margin: 0 0 4px; font-size: 15px; }
+    .saved-card p { margin: 0; color: var(--muted); font-size: 13px; }
+    .saved-actions { display: flex; gap: 8px; }
+
+    .saved-actions button {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .product-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+      border-radius: 24px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .product-tag {
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      border: 1px solid rgba(240, 121, 69, 0.35);
+      padding: 6px 8px;
+      border-radius: 999px;
+    }
+
+    .product-card h3 { margin: 0; font-size: 22px; line-height: 1.08; }
+    .product-desc { margin: 0; color: var(--muted); }
+    .product-includes { margin: 0; padding-left: 18px; color: var(--muted); }
+    .product-footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 8px;
+    }
+
+    .price { font-weight: 800; font-size: 18px; }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .trust-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .trust-card h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .trust-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .narrow { max-width: 720px; }
+
+    .site-footer {
+      border-top: 1px solid var(--line);
+      padding: 22px 0;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 1000;
+    }
+
+    .modal.open { display: block; }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(2, 10, 14, 0.72);
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-card {
+      position: relative;
+      width: min(680px, calc(100vw - 32px));
+      margin: 7vh auto;
+      background: #07222c;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 22px;
+      max-height: 86vh;
+      overflow: auto;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .tab.active {
+      background: rgba(88, 222, 215, 0.12);
+      border-color: rgba(88, 222, 215, 0.38);
+      color: var(--accent);
+    }
+
+    .auth-signed {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(88, 222, 215, 0.16);
+      color: var(--accent);
+      font-weight: 800;
+      border: 1px solid rgba(88, 222, 215, 0.28);
+    }
+
+    .auth-name {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgba(246, 241, 231, 0.88);
+      font-weight: 700;
+    }
+
+    .checkout-summary {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .checkout-summary h3 { margin: 0 0 6px; }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .guide-notice {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(88, 222, 215, 0.08);
+      border: 1px solid rgba(88, 222, 215, 0.18);
+      color: rgba(246, 241, 231, 0.86);
+      margin: 12px 0;
+      font-size: 14px;
+    }
+
+    .guide-route {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .guide-route h4 { margin: 0 0 8px; }
+    .guide-route p { margin: 6px 0; color: var(--muted); }
+    .guide-route ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      background: #0b3140;
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 12px 16px;
+      border-radius: 12px;
+      transition: 0.25s ease;
+      z-index: 2000;
+      max-width: min(560px, calc(100vw - 32px));
+      box-shadow: var(--shadow);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.error { border-color: rgba(240, 121, 69, 0.55); }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .product-grid,
+      .trust-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .result-cols {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <button class="brand" data-scroll="top">TripMint</button>
+
+      <nav class="nav-links">
+        <button data-scroll="planner">Planner</button>
+        <button data-scroll="guides">Guides</button>
+        <button data-scroll="trust">Trust</button>
+        <button data-scroll="contact">Contact</button>
+      </nav>
+
+      <div id="authArea"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="container hero-grid">
+        <div>
+          <span class="badge">Travel decisions, simplified</span>
+          <h1>Build a one-day itinerary that actually works.</h1>
+          <p class="lead">
+            TripMint helps you choose the right route, protect the most important booking,
+            and know exactly what to cut when time is limited.
+          </p>
+
+          <div class="hero-actions">
+            <button class="btn" data-scroll="planner">Create itinerary</button>
+            <button class="btn btn-ghost" data-scroll="guides">Buy decision guides</button>
+          </div>
+
+          <div class="hero-trust">
+            <div>• Secure checkout flow ready for Paystack</div>
+            <div>• Practical route logic instead of overloaded lists</div>
+            <div>• Built for first-timers, families, and short trips</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 style="margin-top:0;">Launch checklist</h2>
+          <p class="muted">
+            Join the list for early access to new destination guides and travel decision tools.
+          </p>
+
+          <form id="launchForm">
+            <label for="launchEmail">Email address</label>
+            <input id="launchEmail" type="email" placeholder="you@example.com" required />
+            <div style="margin-top:14px;">
+              <button class="btn full" type="submit">Join the launch list</button>
+            </div>
+          </form>
+
+          <p class="muted small" style="margin-bottom:0;">
+            No spam. Only useful travel planning updates.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="planner" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>One-day itinerary planner</h2>
+          <p>
+            Choose the kind of day you want. TripMint creates a clear route with graceful cuts
+            and recovery branches for when things change.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <form id="planForm" class="panel">
+            <label for="destination">Destination</label>
+            <select id="destination">
+              <option value="rome">Rome</option>
+              <option value="florence">Florence</option>
+              <option value="paris">Paris</option>
+              <option value="lisbon">Lisbon</option>
+              <option value="custom">Custom destination</option>
+            </select>
+
+            <div id="customDestinationWrap" class="hidden">
+              <label for="customDestination">Custom destination name</label>
+              <input id="customDestination" placeholder="Example: Accra" />
+            </div>
+
+            <label for="planDate">Travel date</label>
+            <input id="planDate" type="date" />
+
+            <label for="priority">Priority</label>
+            <select id="priority">
+              <option value="firsttime">First-time essentials</option>
+              <option value="culture">Culture and landmarks</option>
+              <option value="food">Food and local flavour</option>
+              <option value="family">Easy family pace</option>
+              <option value="hidden">Hidden and slower routes</option>
+            </select>
+
+            <label for="pace">Pace</label>
+            <select id="pace">
+              <option value="balanced">Balanced</option>
+              <option value="slow">Slow</option>
+              <option value="packed">Packed</option>
+            </select>
+
+            <label for="constraint">Main constraint</label>
+            <select id="constraint">
+              <option value="none">None</option>
+              <option value="mobility">Mobility or stairs</option>
+              <option value="heat">Heat or sun exposure</option>
+              <option value="rain">Rain backup</option>
+              <option value="budget">Budget sensitivity</option>
+            </select>
+
+            <div style="margin-top:18px;">
+              <button class="btn full" type="submit">Generate itinerary</button>
+            </div>
+          </form>
+
+          <div>
+            <div id="itineraryOutput" class="panel">
+              <div class="result-head">
+                <h3>Your plan will appear here</h3>
+                <p>
+                  Generate a plan, save it to your account, copy it, and reopen it anytime.
+                </p>
+              </div>
+            </div>
+
+            <div class="panel" style="margin-top:18px;">
+              <h3 style="margin-top:0;">Saved itineraries</h3>
+              <div id="savedItineraries"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="guides" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>Decision guides</h2>
+          <p>
+            Practical guide drafts for travellers who want a clear day instead of endless research.
+          </p>
+        </div>
+
+        <div id="productGrid" class="product-grid"></div>
+      </div>
+    </section>
+
+    <section id="trust" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Trust signals</h2>
+          <p>Clear promises, no hidden booking claims, and honest travel guidance.</p>
+        </div>
+
+        <div class="trust-grid">
+          <div class="trust-card">
+            <h3>Secure checkout ready</h3>
+            <p>
+              TripMint is structured for Paystack checkout. Payment verification should be connected
+              before live sales.
+            </p>
+          </div>
+
+          <div class="trust-card">
+            <h3>No hidden booking role</h3>
+            <p>
+              TripMint sells planning and decision guides. It is not a travel agent and does not
+              secretly manage bookings.
+            </p>
+          </div>
+
+          <div class="trust-card">
+            <h3>Official source prompts</h3>
+            <p>
+              Travellers are reminded to confirm opening hours, timed entry, transport, weather,
+              and access rules with official sources.
+            </p>
+          </div>
+
+          <div class="trust-card">
+            <h3>Support before launch</h3>
+            <p>
+              Contact and support messages are stored locally and can be connected to your backend
+              or inbox later.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>Contact</h2>
+          <p>Ask a question, request a destination, or get help before purchase.</p>
+        </div>
+
+        <form id="contactForm" class="panel narrow">
+          <label for="contactName">Name</label>
+          <input id="contactName" placeholder="Your name" required />
+
+          <label for="contactEmail">Email</label>
+          <input id="contactEmail" type="email" placeholder="you@example.com" required />
+
+          <label for="contactSubject">Subject</label>
+          <input id="contactSubject" placeholder="What do you need help with?" required />
+
+          <label for="contactMessage">Message</label>
+          <textarea id="contactMessage" placeholder="Tell us what you need." required></textarea>
+
+          <div style="margin-top:16px;">
+            <button class="btn" type="submit">Send message</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <div>© <span id="year"></span> TripMint. A day that works.</div>
+      <div class="muted small">
+        Demo auth and demo unlock are stored in this browser until you connect your backend.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Auth modal -->
+  <div class="modal" id="authModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card">
+      <button class="modal-close" data-close aria-label="Close">×</button>
+      <h2 style="margin-top:0;">Sign in to TripMint</h2>
+
+      <div class="tabs">
+        <button type="button" id="authTabSignIn" class="tab active">Sign in</button>
+        <button type="button" id="authTabSignUp" class="tab">Create account</button>
+      </div>
+
+      <form id="signinForm">
+        <label for="signinEmail">Email</label>
+        <input id="signinEmail" type="email" autocomplete="email" required />
+
+        <label for="signinPassword">Password</label>
+        <input id="signinPassword" type="password" autocomplete="current-password" required />
+
+        <div id="signinError" class="form-error"></div>
+        <button class="btn full" type="submit">Sign in</button>
+      </form>
+
+      <form id="signupForm" class="hidden">
+        <label for="signupName">Name</label>
+        <input id="signupName" placeholder="Your name" required />
+
+        <label for="signupEmail">Email</label>
+        <input id="signupEmail" type="email" autocomplete="email" required />
+
+        <label for="signupPassword">Password</label>
+        <input id="signupPassword" type="password" minlength="8" autocomplete="new-password" required />
+
+        <div id="signupError" class="form-error"></div>
+        <button class="btn full" type="submit">Create account</button>
+      </form>
+
+      <button id="demoAuthBtn" class="btn btn-ghost full" type="button" style="margin-top:12px;">
+        Use demo traveller
+      </button>
+
+      <p class="muted small">
+        Demo auth stores accounts in this browser. Replace with real authentication before live sales.
+      </p>
+    </div>
+  </div>
+
+  <!-- Checkout modal -->
+  <div class="modal" id="checkoutModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card">
+      <button class="modal-close" data-close aria-label="Close">×</button>
+      <h2 style="margin-top:0;">Checkout</h2>
+
+      <div class="checkout-summary">
+        <h3 id="checkoutProductTitle"></h3>
+        <div id="checkoutProductPrice" class="price"></div>
+      </div>
+
+      <label for="checkoutEmail">Email for delivery</label>
+      <input id="checkoutEmail" type="email" required />
+
+      <div id="checkoutNotice" class="muted small" style="margin-top:10px;"></div>
+      <div id="checkoutError" class="form-error"></div>
+
+      <div class="modal-actions">
+        <button id="checkoutCancelButton" class="btn btn-ghost" type="button">Cancel</button>
+        <button id="checkoutButton" class="btn" type="button">Pay and unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guide modal -->
+  <div class="modal" id="guideModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card">
+      <button class="modal-close" data-close aria-label="Close">×</button>
+      <h2 id="guideModalTitle" style="margin-top:0;"></h2>
+      <div id="guideModalBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script>
+    /*
+      TripMint clean one-file app.
+
+      Paystack setup:
+      - Replace paystackPublicKey with your Paystack public key when ready.
+      - For production sales, add a server endpoint at /api/paystack/verify.
+      - Until then, successful checkout falls back to a demo unlock so the app stays usable.
+    */
+
+    const CONFIG = {
+      appName: "TripMint",
+      paystackPublicKey: "",
+      currency: "NGN",
+      supportEmail: "hello@tripmint.com"
+    };
+
+    const LS = {
+      users: "tm_users",
+      session: "tm_session",
+      itineraries: "tm_itineraries",
+      purchases: "tm_purchases",
+      contacts: "tm_contacts",
+      launch: "tm_launch"
+    };
+
+    const DEFAULT_RECOVERY = [
+      "If a major site is closed, swap it for a viewpoint and book the next available slot.",
+      "If weather changes, move indoor during midday and keep evening for walking.",
+      "If energy drops, cut one museum and protect food, rest, and one memorable moment."
+    ];
+
+    const DESTINATIONS = {
+      rome: {
+        label: "Rome",
+        recovery: [
+          "If timed entry fails, use the ancient core from outside and save interiors for another slot.",
+          "If heat is high, move museum time to midday and keep evening for the historic centre.",
+          "If transport is disrupted, stay in one district instead of crossing the city."
+        ],
+        routes: [
+          {
+            title: "First-timer classic",
+            protects: "the major ancient-core anchors",
+            givesUp: "long neighbourhood lingering",
+            blocks: [
+              "Anchor the morning to your timed Colosseum or Forum entry and arrive early.",
+              "Keep late morning for the walkable ancient core rather than another museum.",
+              "Move lunch away from the monument perimeter to protect value and calm.",
+              "Close with a historic-centre walk that ends at a viewpoint before dinner."
+            ]
+          },
+          {
+            title: "Slow food and neighbourhood",
+            protects: "food, pauses, and one major sight",
+            givesUp: "multiple landmark interiors",
+            blocks: [
+              "Start with one major sight and keep it short.",
+              "Use mid-morning for a market or café stop instead of a second museum.",
+              "Make lunch the main event and keep it unhurried.",
+              "End with a walkable neighbourhood loop and one sweet stop."
+            ]
+          },
+          {
+            title: "Easy family pace",
+            protects: "low-stress movement and breaks",
+            givesUp: "dense monument queues",
+            blocks: [
+              "Choose one large anchor site and keep expectations simple.",
+              "Add a park, plaza, or open space after the first stop.",
+              "Keep lunch early and familiar to avoid fatigue.",
+              "Finish with one memorable treat before energy collapses."
+            ]
+          }
+        ]
+      },
+      florence: {
+        label: "Florence",
+        recovery: [
+          "If dome or tower access is limited, swap it for a riverside walk and viewpoint.",
+          "If museums sell out, use façades, plazas, and market areas as the main story.",
+          "If heat is high, schedule indoor gallery time for midday."
+        ],
+        routes: [
+          {
+            title: "First-timer classic",
+            protects: "the cathedral core and one museum anchor",
+            givesUp: "slow Oltrarno lingering",
+            blocks: [
+              "Start near the cathedral before crowds build.",
+              "Use mid-morning for one reserved museum or interior.",
+              "Take lunch away from the tightest tourist core.",
+              "Finish with a bridge-and-viewpoint loop."
+            ]
+          },
+          {
+            title: "Art and slow movement",
+            protects: "one major art stop and café pauses",
+            givesUp: "rushing multiple museums",
+            blocks: [
+              "Choose one major art anchor and book it properly.",
+              "Leave buffer time around it for a slow café stop.",
+              "Use the afternoon for one walkable district.",
+              "Close with a viewpoint before dinner."
+            ]
+          },
+          {
+            title: "Easy family pace",
+            protects: "short distances and treats",
+            givesUp: "long gallery time",
+            blocks: [
+              "Start with a plaza and cathedral exterior.",
+              "Add a short market or food stop.",
+              "Keep museum time under one hour if possible.",
+              "End with gelato and a river walk."
+            ]
+          }
+        ]
+      },
+      paris: {
+        label: "Paris",
+        recovery: [
+          "If a museum is overwhelmed, swap it for a covered passage and café.",
+          "If rain arrives, choose one museum and one covered shopping route.",
+          "If transport is delayed, keep the day inside two neighbouring districts."
+        ],
+        routes: [
+          {
+            title: "First-timer classic",
+            protects: "one iconic anchor and one district",
+            givesUp: "crossing the city constantly",
+            blocks: [
+              "Start with one iconic anchor and keep the visit timed.",
+              "Use mid-morning for a walk through one nearby district.",
+              "Take lunch in a side street rather than the monument perimeter.",
+              "Finish with a river-side route and one viewpoint."
+            ]
+          },
+          {
+            title: "Food and slow flavour",
+            protects: "café time and one market stop",
+            givesUp: "multiple museum interiors",
+            blocks: [
+              "Start with a bakery stop and one walkable street.",
+              "Use mid-morning for a market or speciality shop.",
+              "Make lunch unhurried and local.",
+              "End with one dessert stop and a calm walk."
+            ]
+          },
+          {
+            title: "Easy family pace",
+            protects: "simple movement and open space",
+            givesUp: "long queues",
+            blocks: [
+              "Choose one large sight and one open space.",
+              "Keep food simple and familiar.",
+              "Use a boat, ride, or short walk instead of long transfers.",
+              "End early with a treat before fatigue."
+            ]
+          }
+        ]
+      },
+      lisbon: {
+        label: "Lisbon",
+        recovery: [
+          "If hills are too much, use lifts, rides, or one flat district.",
+          "If wind or rain appears, choose museums and covered cafés.",
+          "If trams are crowded, use viewpoints and walks instead."
+        ],
+        routes: [
+          {
+            title: "First-timer classic",
+            protects: "one historic district and one viewpoint",
+            givesUp: "trying to do every hill",
+            blocks: [
+              "Start in one historic district before heat and crowds.",
+              "Use mid-morning for one church, museum, or market stop.",
+              "Take lunch away from the main tourist lane.",
+              "Finish with one viewpoint and a calm descent."
+            ]
+          },
+          {
+            title: "Food and local flavour",
+            protects: "pastry stops and market time",
+            givesUp: "long museum queues",
+            blocks: [
+              "Start with a pastry stop.",
+              "Use mid-morning for a market or local shop.",
+              "Make lunch simple and regional.",
+              "End with one sweet stop and a short walk."
+            ]
+          },
+          {
+            title: "Easy family pace",
+            protects: "low-effort movement",
+            givesUp: "steep walking routes",
+            blocks: [
+              "Use a lift, tram, or ride for the hardest climb.",
+              "Keep one main district and one open space.",
+              "Take food breaks before energy drops.",
+              "End with a viewpoint accessible without extra stairs."
+            ]
+          }
+        ]
+      }
+    };
+
+    const PRODUCTS = [
+      {
+        handle: "rome-one-day-first-timer-decision-guide",
+        destinationKey: "rome",
+        title: "Rome: One-Day First-Timer Decision Guide",
+        price: 4500,
+        currency: "NGN",
+        description: "Choose the right Rome route, protect timed entry, and know what to cut.",
+        includes: [
+          "3 route identities",
+          "If-this-happens branches",
+          "Official-source checklist"
+        ]
+      },
+      {
+        handle: "florence-art-day-decision-guide",
+        destinationKey: "florence",
+        title: "Florence: Art Day Decision Guide",
+        price: 4000,
+        currency: "NGN",
+        description: "Pick one major art anchor and protect slow movement around it.",
+        includes: [
+          "Museum choice logic",
+          "Slow route structure",
+          "Recovery branches"
+        ]
+      },
+      {
+        handle: "paris-family-day-decision-guide",
+        destinationKey: "paris",
+        title: "Paris: Family Day Decision Guide",
+        price: 4200,
+        currency: "NGN",
+        description: "Keep Paris simple, calm, and memorable for families with limited energy.",
+        includes: [
+          "Low-stress route",
+          "Food and break logic",
+          "Rain backup plan"
+        ]
+      }
+    ];
+
+    let state = {
+      user: null,
+      currentItinerary: null,
+      checkoutProduct: null,
+      pendingCheckoutHandle: null,
+      paystackTries: 0
+    };
+
+    const store = {
+      get(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (error) {
+          return fallback;
+        }
+      },
+      set(key, value) {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {}
+      },
+      remove(key) {
+        try {
+          localStorage.removeItem(key);
+        } catch (error) {}
+      }
+    };
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function escapeHtml(value) {
+      const div = document.createElement("div");
+      div.textContent = value == null ? "" : String(value);
+      return div.innerHTML;
+    }
+
+    function randomId(prefix = "id") {
+      const bytes = new Uint8Array(10);
+      if (window.crypto && window.crypto.getRandomValues) {
+        window.crypto.getRandomValues(bytes);
+      } else {
+        for (let i = 0; i < bytes.length; i++) {
+          bytes[i] = Math.floor(Math.random() * 256);
+        }
+      }
+      return prefix + "-" + Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function formatPrice(product) {
+      try {
+        return new Intl.NumberFormat("en-NG", {
+          style: "currency",
+          currency: product.currency || CONFIG.currency
+        }).format(product.price);
+      } catch (error) {
+        return (product.currency || CONFIG.currency) + " " + product.price;
+      }
+    }
+
+    let toastTimer;
+    function showToast(message, isError = false) {
+      const toast = $("toast");
+      toast.textContent = message;
+      toast.className = "toast show" + (isError ? " error" : "");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.className = "toast";
+      }, 4200);
+    }
+
+    function scrollToId(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (id === "top") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function setButtonLoading(button, loading, label) {
+      if (!button) return;
+      if (loading) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = label || "Working...";
+        button.disabled = true;
+      } else {
+        button.textContent = button.dataset.originalText || button.textContent;
+        button.disabled = false;
+      }
+    }
+
+    function openModal(id) {
+      closeModals();
+      const modal = $(id);
+      if (!modal) return;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("no-scroll");
+      const focusable = modal.querySelector("input, button, select, textarea");
+      if (focusable) focusable.focus();
+    }
+
+    function closeModals() {
+      document.querySelectorAll(".modal.open").forEach(modal => {
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+      });
+      document.body.classList.remove("no-scroll");
+    }
+
+    function getUsers() {
+      return store.get(LS.users, []);
+    }
+
+    function saveUsers(users) {
+      store.set(LS.users, users);
+    }
+
+    async function hashPassword(password, salt) {
+      const text = password + ":" + salt;
+      if (window.crypto && window.crypto.subtle) {
+        try {
+          const digest = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+          return Array.from(new Uint8Array(digest))
+            .map(b => b.toString(16).padStart(2, "0"))
+            .join("");
+        } catch (error) {}
+      }
+
+      let h = 5381;
+      for (let i = 0; i < text.length; i++) {
+        h = ((h * 33) ^ text.charCodeAt(i)) >>> 0;
+      }
+      return "fallback-" + h.toString(16);
+    }
+
+    async function signUp(name, email, password) {
+      name = name.trim();
+      email = email.trim().toLowerCase();
+
+      if (name.length < 2) return "Please enter your name.";
+      if (!isValidEmail(email)) return "Please enter a valid email address.";
+      if (password.length < 8) return "Password must be at least 8 characters.";
+
+      const users = getUsers();
+      if (users.some(user => user.email === email)) {
+        return "An account with this email already exists.";
+      }
+
+      const salt = randomId("salt");
+      const hash = await hashPassword(password, salt);
+      const user = {
+        id: randomId("user"),
+        name,
+        email,
+        salt,
+        hash,
+        createdAt: new Date().toISOString()
+      };
+
+      users.push(user);
+      saveUsers(users);
+      setSession(user);
+      return null;
+    }
+
+    async function signIn(email, password) {
+      email = email.trim().toLowerCase();
+      const users = getUsers();
+      const user = users.find(item => item.email === email);
+
+      if (!user) return "No account found for that email.";
+
+      const hash = await hashPassword(password, user.salt);
+      if (hash !== user.hash) return "Incorrect password.";
+
+      setSession(user);
+      return null;
+    }
+
+    function setSession(user) {
+      const session = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        token: randomId("session"),
+        createdAt: new Date().toISOString()
+      };
+
+      store.set(LS.session, session);
+      state.user = session;
+
+      renderAuthArea();
+      renderSavedItineraries();
+      renderProducts();
+
+      if (state.pendingCheckoutHandle) {
+        const handle = state.pendingCheckoutHandle;
+        state.pendingCheckoutHandle = null;
+        setTimeout(() => openCheckout(handle), 120);
+      }
+    }
+
+    function signOut() {
+      store.remove(LS.session);
+      state.user = null;
+      renderAuthArea();
+      renderSavedItineraries();
+      renderProducts();
+      showToast("Signed out.");
+    }
+
+    function requireAuth(message, pendingHandle) {
+      if (state.user) return true;
+      if (pendingHandle) state.pendingCheckoutHandle = pendingHandle;
+      if (message) showToast(message, true);
+      openModal("authModal");
+      return false;
+    }
+
+    async function ensureDemoUser() {
+      const users = getUsers();
+      const exists = users.some(user => user.email === "demo@tripmint.com");
+      if (exists) return;
+
+      const salt = randomId("salt");
+      const hash = await hashPassword("tripmint123", salt);
+
+      users.push({
+        id: randomId("user"),
+        name: "TripMint Demo",
+        email: "demo@tripmint.com",
+        salt,
+        hash,
+        createdAt: new Date().toISOString()
+      });
+
+      saveUsers(users);
+    }
+
+    function renderAuthArea() {
+      const el = $("authArea");
+      if (!el) return;
+
+      if (state.user) {
+        const initial = (state.user.name || "U").charAt(0).toUpperCase();
+        el.innerHTML = `
+          <div class="auth-signed">
+            <span class="avatar">${escapeHtml(initial)}</span>
+            <span class="auth-name">${escapeHtml(state.user.name)}</span>
+            <button class="btn btn-ghost" id="signOutBtn">Sign out</button>
+          </div>
+        `;
+        $("signOutBtn").addEventListener("click", signOut);
+      } else {
+        el.innerHTML = `<button class="btn btn-ghost" id="openAuthBtn">Sign in</button>`;
+        $("openAuthBtn").addEventListener("click", () => openModal("authModal"));
+      }
+    }
+
+    function switchAuthTab(tab) {
+      const isSignIn = tab === "signin";
+      $("signinForm").classList.toggle("hidden", !isSignIn);
+      $("signupForm").classList.toggle("hidden", isSignIn);
+      $("authTabSignIn").classList.toggle("active", isSignIn);
+      $("authTabSignUp").classList.toggle("active", !isSignIn);
+    }
+
+    function getItineraries() {
+      return store.get(LS.itineraries, []);
+    }
+
+    function saveItineraries(list) {
+      store.set(LS.itineraries, list.slice(0, 30));
+      renderSavedItineraries();
+    }
+
+    function saveCurrentItinerary() {
+      if (!requireAuth("Sign in to save itineraries.")) return;
+      if (!state.currentItinerary) return;
+
+      let list = getItineraries();
+      const index = list.findIndex(item => item.id === state.currentItinerary.id);
+
+      if (index >= 0) {
+        list[index] = state.currentItinerary;
+      } else {
+        list.unshift(state.currentItinerary);
+      }
+
+      saveItineraries(list);
+      showToast("Itinerary saved.");
+    }
+
+    function renderSavedItineraries() {
+      const el = $("savedItineraries");
+      if (!el) return;
+
+      if (!state.user) {
+        el.innerHTML = `<p class="muted">Sign in to save and reopen your itineraries.</p>`;
+        return;
+      }
+
+      const list = getItineraries();
+      if (!list.length) {
+        el.innerHTML = `<p class="muted">No saved itineraries yet. Generate one and save it.</p>`;
+        return;
+      }
+
+      el.innerHTML = list.map(item => `
+        <article class="saved-card">
+          <div>
+            <h4>${escapeHtml(item.routeTitle || "Saved itinerary")}</h4>
+            <p>${escapeHtml(item.destination || "Destination")} • ${escapeHtml(item.pace || "balanced")} pace</p>
+          </div>
+          <div class="saved-actions">
+            <button data-action="load" data-id="${escapeHtml(item.id)}">Open</button>
+            <button data-action="delete" data-id="${escapeHtml(item.id)}">Delete</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function chooseRoute(destination, priority) {
+      if (!destination || !destination.routes || !destination.routes.length) return null;
+      const map = {
+        firsttime: 0,
+        culture: 0,
+        food: 1,
+        family: 2,
+        hidden: 1
+      };
+      const index = map[priority] ?? 0;
+      return destination.routes[index] || destination.routes[0];
+    }
+
+    function customPlan(name, priority) {
+      return {
+        title: "Custom day in " + name,
+        protects: "one anchor experience",
+        givesUp: "overloading the route",
+        blocks: [
+          "Choose one anchor activity and build the morning around it.",
+          "Keep midday flexible with food and rest near the anchor area.",
+          "Use the afternoon for one district instead of multiple attractions.",
+          "End with a viewpoint, meal, or calm walk that requires no booking."
+        ]
+      };
+    }
+
+    function generateItinerary() {
+      const destinationKey = $("destination").value;
+      const priority = $("priority").value;
+      const pace = $("pace").value;
+      const constraint = $("constraint").value;
+      const travelDate = $("planDate").value;
+
+      let destinationName;
+      let route;
+
+      if (destinationKey === "custom") {
+        destinationName = $("customDestination").value.trim() || "your destination";
+        route = customPlan(destinationName, priority);
+      } else {
+        const destination = DESTINATIONS[destinationKey];
+        destinationName = destination.label;
+        route = chooseRoute(destination, priority);
+      }
+
+      const labels = ["Morning", "Midday", "Afternoon", "Evening"];
+      const maxItems = pace === "slow" ? 3 : 4;
+      const items = route.blocks.slice(0, maxItems).map((text, index) => ({
+        label: labels[index],
+        text
+      }));
+
+      if (pace === "packed") {
+        items.push({
+          label: "Optional extension",
+          text: "Add one low-friction stop near your dinner area if energy remains."
+        });
+      }
+
+      if (pace === "slow") {
+        items.push({
+          label: "Graceful cut",
+          text: "Drop one indoor stop and protect food, rest, and one memorable moment."
+        });
+      }
+
+      const cuts = [
+        "Keep one anchor and protect it.",
+        "Cut the stop that requires the longest queue.",
+        "Keep dinner simple if the day becomes uncertain."
+      ];
+
+      const branches = DESTINATIONS[destinationKey]?.recovery || DEFAULT_RECOVERY;
+
+      if (constraint === "mobility") {
+        cuts.push("Choose one district and remove stairs, hills, and long transfers.");
+      }
+
+      if (constraint === "heat") {
+        cuts.push("Move indoor during midday and keep evening for the lightest activity.");
+      }
+
+      if (constraint === "rain") {
+        cuts.push("Swap open-air routes for one museum and one covered food stop.");
+      }
+
+      if (constraint === "budget") {
+        cuts.push("Prioritise free viewpoints, streets, and markets over paid interiors.");
+      }
+
+      const itinerary = {
+        id: randomId("itin"),
+        createdAt: new Date().toISOString(),
+        travelDate,
+        destination: destinationName,
+        routeTitle: route.title,
+        priority,
+        pace,
+        constraint,
+        summary: `A ${pace} ${route.title.toLowerCase()} for ${destinationName}. It protects ${route.protects} and gives up ${route.givesUp}.`,
+        items,
+        cuts,
+        branches
+      };
+
+      state.currentItinerary = itinerary;
+      renderItinerary(itinerary);
+      scrollToId("itineraryOutput");
+    }
+
+    function renderItinerary(itinerary) {
+      const el = $("itineraryOutput");
+      const items = itinerary.items || [];
+      const cuts = itinerary.cuts || [];
+      const branches = itinerary.branches || [];
+
+      el.innerHTML = `
+        <div class="result-head">
+          <h3>${escapeHtml(itinerary.routeTitle)}</h3>
+          <p>${escapeHtml(itinerary.summary)}</p>
+        </div>
+
+        <ol class="timeline">
+          ${items.map(item => `
+            <li>
+              <span class="time">${escapeHtml(item.label)}</span>
+              <p>${escapeHtml(item.text)}</p>
+            </li>
+          `).join("")}
+        </ol>
+
+        <div class="result-cols">
+          <div>
+            <h4>Graceful cuts</h4>
+            <ul>
+              ${cuts.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+            </ul>
+          </div>
+          <div>
+            <h4>If this happens</h4>
+            <ul>
+              ${branches.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn" id="saveItineraryBtn">Save itinerary</button>
+          <button class="btn btn-ghost" id="copyItineraryBtn">Copy plan</button>
+        </div>
+      `;
+
+      $("saveItineraryBtn").addEventListener("click", saveCurrentItinerary);
+      $("copyItineraryBtn").addEventListener("click", () => copyItinerary(itinerary));
+    }
+
+    function itineraryToText(itinerary) {
+      const lines = [
+        `${CONFIG.appName} one-day plan`,
+        `Destination: ${itinerary.destination}`,
+        `Route: ${itinerary.routeTitle}`,
+        `Pace: ${itinerary.pace}`,
+        ``,
+        itinerary.summary,
+        ``,
+        `Plan:`,
+        ...itinerary.items.map(item => `${item.label}: ${item.text}`),
+        ``,
+        `Graceful cuts:`,
+        ...itinerary.cuts.map(item => `- ${item}`),
+        ``,
+        `Recovery branches:`,
+        ...itinerary.branches.map(item => `- ${item}`)
+      ];
+
+      return lines.join("\n");
+    }
+
+    async function copyItinerary(itinerary) {
+      const text = itineraryToText(itinerary);
+
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Plan copied.");
+      } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        showToast("Plan copied.");
+      }
+    }
+
+    function getPurchases() {
+      return store.get(LS.purchases, []);
+    }
+
+    function isPurchased(handle) {
+      return getPurchases().some(purchase => {
+        return purchase.productHandle === handle && ["success", "demo", "verified"].includes(purchase.status);
+      });
+    }
+
+    function recordPurchase(handle, reference, status) {
+      const list = getPurchases();
+      list.unshift({
+        id: randomId("purchase"),
+        productHandle: handle,
+        reference,
+        status,
+        createdAt: new Date().toISOString()
+      });
+      store.set(LS.purchases, list.slice(0, 50));
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const el = $("productGrid");
+      if (!el) return;
+
+      el.innerHTML = PRODUCTS.map(product => {
+        const purchased = isPurchased(product.handle);
+        const includes = product.includes.map(item => `<li>${escapeHtml(item)}</li>`).join("");
+
+        return `
+          <article class="product-card">
+            <div class="product-tag">Decision guide</div>
+            <h3>${escapeHtml(product.title)}</h3>
+            <p class="product-desc">${escapeHtml(product.description)}</p>
+            <ul class="product-includes">${includes}</ul>
+            <div class="product-footer">
+              <div class="price">${escapeHtml(formatPrice(product))}</div>
+              ${
+                purchased
+                  ? `<button class="btn btn-ghost" data-action="open-guide" data-product-handle="${escapeHtml(product.handle)}">Open guide</button>`
+                  : `<button class="btn" data-action="buy" data-product-handle="${escapeHtml(product.handle)}">Buy guide</button>`
+              }
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function openCheckout(handle) {
+      if (!requireAuth("Sign in before checkout.", handle)) return;
+
+      const product = PRODUCTS.find(item => item.handle === handle);
+      if (!product) return;
+
+      state.checkoutProduct = product;
+      $("checkoutProductTitle").textContent = product.title;
+      $("checkoutProductPrice").textContent = formatPrice(product);
+      $("checkoutEmail").value = state.user?.email || "";
+      $("checkoutNotice").textContent = CONFIG.paystackPublicKey
+        ? "Paystack checkout is ready. Complete payment securely."
+        : "No Paystack public key added yet. Use demo checkout today, then connect Paystack tomorrow.";
+      $("checkoutError").textContent = "";
+
+      openModal("checkoutModal");
+    }
+
+    function ensurePaystackScript() {
+      if (!CONFIG.paystackPublicKey || window.PaystackPop) return;
+      const script = document.createElement("script");
+      script.src = "https://js.paystack.co/v1/inline.js";
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
+    async function verifyPayment(reference, product) {
+      try {
+        const response = await fetch("/api/paystack/verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            reference,
+            productHandle: product.handle
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.ok) {
+            recordPurchase(product.handle, reference, data.status || "success");
+            closeModals();
+            showToast("Payment verified.");
+            openGuide(product.handle);
+            return;
+          }
+        }
+      } catch (error) {}
+
+      recordPurchase(product.handle, reference, "demo");
+      closeModals();
+      showToast("Payment reference recorded. Connect server verification before live sales.");
+      openGuide(product.handle);
+    }
+
+    function startCheckout() {
+      const product = state.checkoutProduct;
+      if (!product) return;
+
+      const email = $("checkoutEmail").value.trim();
+      if (!isValidEmail(email)) {
+        $("checkoutError").textContent = "Enter a valid email address.";
+        return;
+      }
+
+      $("checkoutError").textContent = "";
+      const button = $("checkoutButton");
+      setButtonLoading(button, true, "Processing");
+
+      if (CONFIG.paystackPublicKey && !window.PaystackPop) {
+        state.paystackTries += 1;
+        ensurePaystackScript();
+
+        if (state.paystackTries < 3) {
+          showToast("Paystack is loading. Please click pay again.", true);
+          setButtonLoading(button, false);
+          return;
+        }
+
+        showToast("Paystack script unavailable. Using demo checkout.", true);
+      }
+
+      if (CONFIG.paystackPublicKey && window.PaystackPop) {
+        try {
+          const reference = "tm_" + randomId("pay");
+
+          const handler = window.PaystackPop.setup({
+            key: CONFIG.paystackPublicKey,
+            email,
+            amount: Math.round(product.price * 100),
+            currency: product.currency || CONFIG.currency,
+            ref: reference,
+            metadata: {
+              productHandle: product.handle
+            },
+            callback: function(response) {
+              const finalReference = response && response.reference ? response.reference : reference;
+              verifyPayment(finalReference, product).finally(() => {
+                setButtonLoading(button, false);
+              });
+            },
+            onClose: function() {
+              setButtonLoading(button, false);
+              showToast("Checkout closed.");
+            }
+          });
+
+          handler.openIframe();
+          return;
+        } catch (error) {
+          showToast("Paystack could not start. Falling back to demo checkout.", true);
+        }
+      }
+
+      recordPurchase(product.handle, "demo_" + randomId("ref"), "demo");
+      closeModals();
+      showToast("Demo purchase unlocked.");
+      openGuide(product.handle);
+      setButtonLoading(button, false);
+    }
+
+    function buildGuideContent(product) {
+      const destination = DESTINATIONS[product.destinationKey];
+
+      let html = `
+        <p>${escapeHtml(product.description)}</p>
+        <div class="guide-notice">
+          Unlocked guide. Keep volatile details as confirmation prompts. Check current hours,
+          tickets, access, weather, and transport with official sources before travel.
+        </div>
+      `;
+
+      if (destination && destination.routes) {
+        html += `<h3>Route identities</h3>`;
+        html += destination.routes.map(route => `
+          <div class="guide-route">
+            <h4>${escapeHtml(route.title)}</h4>
+            <p><strong>Protects:</strong> ${escapeHtml(route.protects)}.</p>
+            <p><strong>Gives up:</strong> ${escapeHtml(route.givesUp)}.</p>
+            <ul>
+              ${route.blocks.map(block => `<li>${escapeHtml(block)}</li>`).join("")}
+            </ul>
+          </div>
+        `).join("");
+      } else {
+        html += `<p>Use the planner to shape the route, then replace this draft with your source-led content.</p>`;
+      }
+
+      if (destination && destination.recovery) {
+        html += `
+          <h3>Recovery branches</h3>
+          <ul>
+            ${destination.recovery.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+          </ul>
+        `;
+      }
+
+      html += `
+        <h3>Before you go checklist</h3>
+        <ul>
+          <li>Confirm opening hours and last entry.</li>
+          <li>Check timed-entry availability.</li>
+          <li>Save offline maps and transport alternatives.</li>
+          <li>Choose one graceful cut before you leave.</li>
+        </ul>
+      `;
+
+      return html;
+    }
+
+    function openGuide(handle) {
+      const product = PRODUCTS.find(item => item.handle === handle);
+      if (!product) return;
+
+      if (!isPurchased(handle)) {
+        showToast("Purchase required to open this guide.", true);
+        return;
+      }
+
+      $("guideModalTitle").textContent = product.title;
+      $("guideModalBody").innerHTML = buildGuideContent(product);
+      openModal("guideModal");
+    }
+
+    function bindStaticEvents() {
+      document.querySelectorAll("[data-scroll]").forEach(el => {
+        el.addEventListener("click", function(event) {
+          event.preventDefault();
+          const target = this.getAttribute("data-scroll");
+          scrollToId(target);
+          closeModals();
+        });
+      });
+
+      document.addEventListener("click", event => {
+        if (event.target.matches("[data-close]")) {
+          closeModals();
+        }
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") closeModals();
+      });
+
+      $("authTabSignIn").addEventListener("click", () => switchAuthTab("signin"));
+      $("authTabSignUp").addEventListener("click", () => switchAuthTab("signup"));
+
+      $("demoAuthBtn").addEventListener("click", async function() {
+        setButtonLoading(this, true, "Preparing demo");
+        await ensureDemoUser();
+        const error = await signIn("demo@tripmint.com", "tripmint123");
+        if (error) {
+          switchAuthTab("signin");
+          $("signinError").textContent = error;
+        } else {
+          closeModals();
+          showToast("Signed in as demo traveller.");
+        }
+        setButtonLoading(this, false);
+      });
+
+      $("signinForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        $("signinError").textContent = "";
+        const button = this.querySelector('button[type="submit"]');
+        setButtonLoading(button, true, "Signing in");
+
+        const email = $("signinEmail").value;
+        const password = $("signinPassword").value;
+        const error = await signIn(email, password);
+
+        if (error) {
+          $("signinError").textContent = error;
+          setButtonLoading(button, false);
+          return;
+        }
+
+        closeModals();
+        showToast(`Welcome back, ${state.user.name}.`);
+        setButtonLoading(button, false);
+      });
+
+      $("signupForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        $("signupError").textContent = "";
+        const button = this.querySelector('button[type="submit"]');
+        setButtonLoading(button, true, "Creating account");
+
+        const name = $("signupName").value;
+        const email = $("signupEmail").value;
+        const password = $("signupPassword").value;
+        const error = await signUp(name, email, password);
+
+        if (error) {
+          $("signupError").textContent = error;
+          setButtonLoading(button, false);
+          return;
+        }
+
+        closeModals();
+        showToast(`Welcome, ${state.user.name}.`);
+        setButtonLoading(button, false);
+      });
+
+      $("planForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        generateItinerary();
+      });
+
+      $("destination").addEventListener("change", function() {
+        $("customDestinationWrap").classList.toggle("hidden", this.value !== "custom");
+      });
+
+      $("savedItineraries").addEventListener("click", function(event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const id = button.dataset.id;
+        const action = button.dataset.action;
+        let list = getItineraries();
+        const item = list.find(entry => entry.id === id);
+
+        if (action === "load" && item) {
+          state.currentItinerary = item;
+          renderItinerary(item);
+          scrollToId("itineraryOutput");
+        }
+
+        if (action === "delete") {
+          list = list.filter(entry => entry.id !== id);
+          saveItineraries(list);
+          showToast("Itinerary deleted.");
+        }
+      });
+
+      $("productGrid").addEventListener("click", function(event) {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const handle = button.dataset.productHandle;
+        const action = button.dataset.action;
+
+        if (action === "buy") openCheckout(handle);
+        if (action === "open-guide") openGuide(handle);
+      });
+
+      $("checkoutButton").addEventListener("click", startCheckout);
+      $("checkoutCancelButton").addEventListener("click", closeModals);
+
+      $("launchForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const email = $("launchEmail").value.trim();
+
+        if (!isValidEmail(email)) {
+          showToast("Enter a valid email.", true);
+          return;
+        }
+
+        const list = store.get(LS.launch, []);
+        list.unshift({
+          email,
+          createdAt: new Date().toISOString()
+        });
+        store.set(LS.launch, list.slice(0, 100));
+
+        this.reset();
+        showToast("You are on the launch list.");
+      });
+
+      $("contactForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const payload = {
+          name: $("contactName").value.trim(),
+          email: $("contactEmail").value.trim(),
+          subject: $("contactSubject").value.trim(),
+          message: $("contactMessage").value.trim(),
+          createdAt: new Date().toISOString()
+        };
+
+        if (payload.name.length < 2 || !isValidEmail(payload.email) || payload.subject.length < 3 || payload.message.length < 10) {
+          showToast("Please complete all contact fields.", true);
+          return;
+        }
+
+        const contacts = store.get(LS.contacts, []);
+        contacts.unshift(payload);
+        store.set(LS.contacts, contacts.slice(0, 100));
+
+        try {
+          await fetch("/api/contact", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+        } catch (error) {}
+
+        this.reset();
+        showToast("Message saved. Support will reply before live checkout.");
+      });
+    }
+
+    function init() {
+      $("year").textContent = new Date().getFullYear();
+
+      const dateInput = $("planDate");
+      if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split("T")[0];
+      }
+
+      state.user = store.get(LS.session, null);
+
+      renderAuthArea();
+      renderProducts();
+      renderSavedItineraries();
+      bindStaticEvents();
+      ensureDemoUser();
+      ensurePaystackScript();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
